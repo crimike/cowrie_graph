@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block main %}
+
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">IPs</h1>
+    <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below. For more information about DataTables, please visit the <a target="_blank" href="https://datatables.net">official DataTables documentation</a>.</p>
+
+    
+    <div class="card shadow mb-4">
+      <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>IP</th>
+                    <th>Number of Sessions</th>
+                    <th>City</th>
+                    <th>Country</th>
+                    <th>Is anonymous </th>
+                    <th>Is Known Attacker</th>
+                    <th>Is Known Abuser</th>
+                    <th>Is Threat</th>
+                </tr>
+            </thead>
+            <tfoot>
+                <tr>
+                    <th>IP</th>
+                    <th>Number of Sessions</th>
+                    <th>City</th>
+                    <th>Country</th>
+                    <th>Is anonymous </th>
+                    <th>Is Known Attacker</th>
+                    <th>Is Known Abuser</th>
+                    <th>Is Threat</th>
+                </tr>
+            </tfoot>
+            <tbody>
+                {% for ip in ips %}
+                <tr>
+                    <td><a href="{% url 'IP_details' ip.ip_address %}">{{ ip.ip_address }}</a></td>
+                    <td>{{ ip.nr_sessions }}</td>
+                    <td>{{ ip.city }}</td>
+                    <td> {{ ip.country }}</td>
+                    <td> {{ ip.is_anonymous }}</td>
+                    <td> {{ ip.is_known_attacker }}</td>
+                    <td> {{ ip.is_known_abuser }}</td>
+                    <td> {{ ip.is_threat }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <!-- /.container-fluid -->
+
+{% endblock %}

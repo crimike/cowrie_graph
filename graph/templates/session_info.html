@@ -1,0 +1,252 @@
+{% extends 'base.html' %}
+
+{% block main %}
+
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">Session {{session.id}}</h1>
+    <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below. For more information about DataTables, please visit the <a target="_blank" href="https://datatables.net">official DataTables documentation</a>.</p>
+
+    <div class="row">
+
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Credentials</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{auth.username}}/{{auth.password}} </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Start time</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{session.starttime | date:"j-M-Y H:i:s e" }} </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Duration</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{duration}} </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {% if client %}
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">SSH Client</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{client}} </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- End of card row -->
+
+    <div class="card shadow mb-4">
+      <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Session Information</h6>
+      </div>
+      <div class="card-body">
+        IP: <a href='{% url "IP_details" session.ip %}'>{{session.ip}}</a> <br>
+        <!-- TODO: link to download ttylog -->
+        {% if ttylog %}
+          TtyLog: {{ ttylog.ttylog }} <br>
+        {% endif %}
+
+        {% if fp %}
+          Key fingerprint: {{ fp.fingerprint }} <br>
+          Other sessions with same fingerprint: <br>
+          {% for s in other_sessions %}
+          <a href='{% url "Session_details" session.id %}'>{{s.id}} </a>for {{session.ip}} <br>
+          {% endfor %}
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Commands -->
+    <div class="card shadow mb-4">
+      <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Commands</h6>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+            <thead>
+              <tr>
+                  <th>Timestamp</th>
+                  <th>Success</th>
+                  <th>Command</th>
+              </tr>
+          </thead>
+          <tfoot>
+              <tr>
+                  <th>Timestamp</th>
+                  <th>Success</th>
+                  <th>Command</th>
+              </tr>
+          </tfoot>
+          
+          {% for command in commands %}
+          <tbody>
+              <tr>
+                  <td>{{command.timestamp | date:"j-M-Y H:i:s e"}}</td>
+                  {% if command.success %}
+                    <td class="bg-gradient-success"></td>
+                  {% else %}
+                    <td class="bg-gradient-danger"></td>
+                  {% endif %}
+                  <td>{{command.input}}</td>
+              </tr>
+          </tbody>
+          {% endfor %}
+          </table>
+        </div>
+      </div>
+    </div>
+    <!-- End of commands -->
+
+    <!-- IP forwards -->
+    <div class="card shadow mb-4">
+      <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">IP Forwards</h6>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+            <thead>
+              <tr>
+                  <th>Timestamp</th>
+                  <th>Destination</th>
+              </tr>
+          </thead>
+          <tfoot>
+              <tr>
+                  <th>Timestamp</th>
+                  <th>Destination</th>
+              </tr>
+          </tfoot>
+          
+          {% for ipforward in ipf %}
+          <tbody>
+              <tr>
+                  <td>{{ipforward.timestamp | date:"j-M-Y H:i:s e"}}</td>
+                  <td>{{ipforward.dst_ip}}:{{ipforward.dst_port}}</td>
+              </tr>
+          </tbody>
+          {% endfor %}
+          </table>
+        </div>
+      </div>
+    </div>
+    <!-- End of ip forwards -->
+
+    <!-- IP forwards with data -->
+    <div class="card shadow mb-4">
+      <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">IP Forwards with data</h6>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+            <thead>
+              <tr>
+                  <th>Timestamp</th>
+                  <th>Destination</th>
+                  <th>Data</th>
+              </tr>
+          </thead>
+          <tfoot>
+              <tr>
+                  <th>Timestamp</th>
+                  <th>Destination</th>
+                  <th>Data</th>
+              </tr>
+          </tfoot>
+          
+          {% for ipforward in ipf_data %}
+          <tbody>
+              <tr>
+                  <td>{{ipforward.timestamp | date:"j-M-Y H:i:s e"}}</td>
+                  <td>{{ipforward.dst_ip}}:{{ipforward.dst_port}}</td>
+                  <td>{{ipforward.data}}</td>
+              </tr>
+          </tbody>
+          {% endfor %}
+          </table>
+        </div>
+      </div>
+    </div>
+    <!-- End of IP forwards with data -->
+
+    <!-- Downloads -->
+
+    <!-- TODO: add link for downloading of file -->
+
+    <div class="card shadow mb-4">
+      <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Downloads</h6>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+            <thead>
+              <tr>
+                  <th>Timestamp</th>
+                  <th>URL</th>
+                  <th>Sha256Sum</th>
+              </tr>
+          </thead>
+          <tfoot>
+              <tr>
+                  <th>Timestamp</th>
+                  <th>URL</th>
+                  <th>Sha256Sum</th>
+              </tr>
+          </tfoot>
+          
+          {% for d in downloads %}
+          <tbody>
+              <tr>
+                  <td>{{d.timestamp | date:"j-M-Y H:i:s e"}}</td>
+                  <td>{{d.url}}</td>
+                  <td>{{d.shasum}}</td>
+              </tr>
+          </tbody>
+          {% endfor %}
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- End of downloads -->
+
+  </div>
+  <!-- /.container-fluid -->
+
+</div>
+{% endblock %}

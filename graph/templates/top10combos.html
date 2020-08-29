@@ -1,0 +1,46 @@
+<div class="col-xl-4 col-lg-5">
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    
+    <div class="card shadow mb-4">
+      <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Top 10 user/password combinations</h6>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <div id="container_combos"></div>
+          <script>
+            Highcharts.chart('container_combos', {
+                chart: {
+                  type: 'column'
+                },
+                title: {
+                  text: 'Top 10 user/pass combinations'
+                },
+                xAxis: {
+                  categories: [
+                    {% for entry in combos %}'{{ entry.0 }}'{% if not forloop.last %}, {% endif %}{% endfor %}
+                    ]
+                },
+                series: [{
+                  name: 'Count',
+                  dataLabels: {
+                    enabled: true,
+                    crop: false,
+                    overflow: 'none'
+                  },
+                  data: [
+                    {% for entry in combos %}{{ entry.1 }}{% if not forloop.last %}, {% endif %}{% endfor %}
+                  ]
+                }]
+                
+          });
+          </script>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <!-- /.container-fluid -->
+</div>

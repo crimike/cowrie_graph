@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+
+{% block main %}
+
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">Sessions for {{ ip }}</h1>
+    <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below. For more information about DataTables, please visit the <a target="_blank" href="https://datatables.net">official DataTables documentation</a>.</p>
+
+
+
+    <div class="row">
+    
+    <div class="col-xl-3 col-md-6 mb-4">
+      <div class="card border-left-primary shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Location</div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">{{ipenrich.city}}{% if ipenrich.city %},{% endif %} {{ipenrich.country}} </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% if ipenrich.is_threat %}
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-danger shadow h-100 py-2">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="h5 mb-0 font-weight-bold text-gray-800">Is a threat</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+    {% if ipenrich.is_known_attacker %}
+    <div class="col-xl-3 col-md-6 mb-4">
+      <div class="card border-left-danger shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="h5 mb-0 font-weight-bold text-gray-800">Is known attacker</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+    {% if ipenrich.is_known_abuser %}
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-warning shadow h-100 py-2">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="h5 mb-0 font-weight-bold text-gray-800">Is known abuser</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+     {% endif %}
+     {% if ipenrich.is_anonymous %}
+        <div class="col-xl-3 col-md-6 mb-4">
+          <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+              <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                  <div class="h5 mb-0 font-weight-bold text-gray-800">Is anonymous</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+     {% endif %}
+        
+    </div>
+
+    <div class="card shadow mb-4">
+      <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">IP Information</h6>
+      </div>
+
+      <div class="card-body">
+        Location: {{ipenrich.city}}{% if ipenrich.city %},{% endif %} {{ipenrich.country}} <br>
+        Reverse IP lookup: <br>
+        {% for f in fqdn %}
+        {{f}} <br>
+        {% endfor %} <br>
+        
+      </div>
+    </div>
+    
+    <div class="card shadow mb-4">
+      <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+            <thead>
+              <tr>
+                  <th>ID</th>
+                  <th>Duration</th>
+                  <th>Client</th>
+                  <th>Commands</th>
+                  <th>IP Forwards</th>
+                  <th>Downloads</th>
+              </tr>
+          </thead>
+          <tfoot>
+              <tr>
+                  <th>ID</th>
+                  <th>Duration</th>
+                  <th>Client</th>
+                  <th>Commands</th>
+                  <th>IP Forwards</th>
+                  <th>Downloads</th>
+              </tr>
+          </tfoot>
+          <tbody>
+              {% for session in sessions %}
+              <tr>
+                  <td><a href="{% url 'Session_details' session.id %}">{{ session.id }}</a></td>
+                  <td>{{ session.duration }}</td>
+                  <td>{{ session.client }}</td>
+                  <td>{{session.commands}}</td>
+                  <td>{{session.ipf}}</td>
+                  <td>{{session.downloads}}</td>
+              </tr>
+              {% endfor %}
+          </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <!-- /.container-fluid -->
+
+</div>
+{% endblock %}
