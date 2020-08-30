@@ -13,7 +13,7 @@ def reverse_ip_search(ip):
 def enrich_ip(ip):
     try:
         data = requests.get(f'https://api.ipdata.co/{ip}?api-key={api_key}').json()
-        city = data['city'] if data['city'] else ''
+        city = data['city'] if data['city'] else get_city_geoip(ip)
         p = Ipenrichments(ip=ip, 
                 city=city, 
                 country=data['country_name'], 
@@ -31,6 +31,12 @@ def enrich_ip(ip):
                 is_known_abuser = False,
                 is_threat = False)
         # log the exception
-        
-    
     return p
+
+def get_city_geoip(ip):
+    try:
+        data = requests.get(f'http://www.geoplugin.net/json.gp?ip={ip}').json()
+        return data['geoplugin_city']
+    except:
+        # log exception
+        return ''

@@ -1,26 +1,29 @@
-<div class="col-xl-4 col-lg-5">
+<div class="col-lg-6 mb-4">
 <div class="container-fluid">
 
     <!-- Page Heading -->
     
     <div class="card shadow mb-4">
       <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Top 10 passwords</h6>
+        <h6 class="m-0 font-weight-bold text-primary">Top 15 Countries</h6>
       </div>
       <div class="card-body">
         <div class="table-responsive">
-            <div id="container_passwords"></div>
+            <div id="container_countries"></div>
             <script>
-              Highcharts.chart('container_passwords', {
+              Highcharts.chart('container_countries', {
                   chart: {
                     type: 'column'
                   },
+                  caption:{
+                    text: 'Shows top 15 countries with respect to number of sessions initiated from'
+                  },
                   title: {
-                    text: 'Top 10 passwords'
+                    text: 'Top 15 countries'
                   },
                   xAxis: {
                     categories: [
-                      {% for entry in passwords %}'{{ entry.0 }}'{% if not forloop.last %}, {% endif %}{% endfor %}
+                      {% for entry in countries %}'{{ entry.0 }}'{% if not forloop.last %}, {% endif %}{% endfor %}
                       ]
                   },
                   series: [{
@@ -31,7 +34,7 @@
                       overflow: 'none'
                     },
                     data: [
-                      {% for entry in passwords %}{{ entry.1 }}{% if not forloop.last %}, {% endif %}{% endfor %}
+                      {% for entry in countries %}{{ entry.1 }}{% if not forloop.last %}, {% endif %}{% endfor %}
                     ]
                   }]
                   

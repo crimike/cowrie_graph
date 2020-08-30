@@ -14,17 +14,29 @@
   <!-- Highcharts JavaScript -->
   <script src="/static/js/code/highcharts.src.js"></script>
 
-{% include "./top10passwords.html" %}
+{% include "./top_passwords.html" %}
 
-{% include "./top10users.html" %}
+{% include "./top_users.html" %}
 
-{% include "./top10combos.html" %}
+{% include "./top_combos.html" %}
 
 </div>
 
 <div class="row">
-    {% include "./top10clients.html" %}
-    {% include "./top10inputs.html" %}
+    {% include "./top_clients.html" %}
+    {% include "./top_inputs.html" %}
+
+</div>
+
+<div class="row">
+  {% include "./top_countries.html" %}
+  {% include "./top_ips.html" %}
+
+</div>
+
+<div class="row">
+  {% include "./daily_activity.html" %}
+  {% include "./weekly_activity.html" %}
 
 </div>
 

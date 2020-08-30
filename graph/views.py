@@ -1,11 +1,11 @@
 from django.shortcuts import *
 from django.template import loader
-
-# Create your views here.
+from django.db.models import Count
 from django.http import HttpResponse
 from .models import *
 from django_tables2 import RequestConfig
 from .util import *
+import collections
 
 class IP:
     ip_address = '0.0.0.0'
@@ -26,56 +26,44 @@ class IP:
         self.is_known_attacker = isattack
         self.is_known_abuser = isabuse
         self.is_threat = isthreat
+
+
+def get_top_count(cls, value, count):
+    topx = cls.objects.values(value).annotate(xcount=Count(value))
+    dict_top = {}
+    for x in topx:
+        dict_top[x[value]] = x['xcount']
+
+    return sorted(dict_top.items(), key=lambda item: item[1], reverse=True)[:count]    
     
 
 def index(request):
-    auths = CowrieAuth.objects.all()
-    #inputs = Input.objects.all()
-    #sessions = Sessions.objects.all()
-    
-    passwords = {}
-    users = {}
+    sessions = Sessions.objects.values('client').annotate(ccount=Count('client'))
+    auths_combo = CowrieAuth.objects.values('username', 'password').annotate(combo_count=Count('username'))
+    daily_authentications = CowrieAuth.objects.extra(select={'day': 'date( timestamp )'}).values('day').annotate(xcount=Count('timestamp'))
+    weekly_authentications = list(collections.Counter(list(CowrieAuth.objects.dates('timestamp', 'week'))).items())
+
     combos = {}
-    for auth in auths:
-        if auth.password in passwords.keys():
-            passwords[auth.password] += 1
-        else:
-            passwords[auth.password] = 1
-        if auth.username in users.keys():
-            users[auth.username] += 1
-        else:
-            users[auth.username] = 1
-        combo = auth.username + ":" + auth.password
-        if combo in combos.keys():
-            combos[combo] += 1
-        else:
-            combos[combo] = 1
-    
-    commands = {}
-    # for input in inputs:
-    #     if input.input in commands.keys():
-    #         commands[input.input] += 1
-    #     else:
-    #         commands[input.input] = 1
-    
+    for combo in auths_combo:
+        combos[combo['username'] + ":" + combo['password']] = combo['combo_count']
+        
     clients = {}
-    # for session in sessions:
-    #     try:
-    #         client_version = Clients.objects.filter(pk=session.client)[0].version
-    #         if client_version in clients.keys():
-    #             clients[client_version] += 1
-    #         else:
-    #             clients[client_version] = 1
-    #     except:
-    #         #handle list index out of range
-    #         pass
+    for session in sessions:
+        try:
+            client_version = Clients.objects.filter(pk=session["client"])[0].version[2:-1]
+            clients[client_version] = session["ccount"]
+        except:
+            #handle list index out of range
+            pass
 
-
-    top10pass = sorted(passwords.items(), key=lambda item: item[1], reverse=True)[:10]
-    top10users = sorted(users.items(), key=lambda item:item[1], reverse=True)[:10]
     top10combos = sorted(combos.items(),key=lambda item:item[1], reverse=True)[:10]
-    top10inputs = sorted(commands.items(), key=lambda item:item[1], reverse=True)[:10]
     top10clients = sorted(clients.items(), key=lambda item:item[1], reverse=True)[:10]
+
+    top10pass = get_top_count(CowrieAuth, 'password', 10)
+    top10users = get_top_count(CowrieAuth, 'username', 10)
+    top10inputs = get_top_count(Input, 'input', 10)
+    top10countries = get_top_count(Ipenrichments, 'country', 15)
+    top10ips = get_top_count(Sessions, 'ip', 15)
 
 
     context = {
@@ -83,7 +71,11 @@ def index(request):
         'users': top10users,
         'combos': top10combos,
         'inputs': top10inputs,
-        'clients': top10clients
+        'clients': top10clients,
+        'countries': top10countries,
+        'ips': top10ips,
+        'days': daily_authentications,
+        'weeks': weekly_authentications
     }
     return render(request, 'dashboard.html', context)
 
