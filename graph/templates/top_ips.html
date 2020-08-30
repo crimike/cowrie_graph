@@ -1,51 +1,41 @@
-<div class="col-lg-6 mb-4">
-<div class="container-fluid">
-
-    <!-- Page Heading -->
-    
-    <div class="card shadow mb-4">
-      <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Top 15 IPs</h6>
-      </div>
-      <div class="card-body">
-        <div class="table-responsive">
-          <div id="container_ips"></div>
-          <script>
-            Highcharts.chart('container_ips', {
-                chart: {
-                  type: 'column'
-                },
-                caption: {
-                  text: 'Shows top 15 IPs with respect to number of sessions initiated'
-                },
-                title: {
-                  text: 'Top 15 IPs'
-                },
-                xAxis: {
-                  categories: [
-                    {% for entry in ips %}'{{ entry.0 }}'{% if not forloop.last %}, {% endif %}{% endfor %}
-                    ]
-                },
-                series: [{
-                  name: 'Count',
-                  dataLabels: {
-                    enabled: true,
-                    crop: false,
-                    overflow: 'none'
-                  },
-                  data: [
-                    {% for entry in ips %}{{ entry.1 }}{% if not forloop.last %}, {% endif %}{% endfor %}
-                  ]
-                }]
-                
-          });
-          </script>
-          
-        </div>
-      </div>
-    </div>
-
+<div class="card shadow mb-4">
+  <div class="card-header py-3">
+    <h6 class="m-0 font-weight-bold text-primary">Top {{ips | length}} IPs</h6>
   </div>
-  <!-- /.container-fluid -->
-
+  <div class="card-body">
+    <div class="table-responsive">
+      <div id="container_ips"></div>
+      <script>
+        Highcharts.chart('container_ips', {
+            chart: {
+              type: 'column'
+            },
+            caption: {
+              text: 'Shows top {{ips | length}} IPs with respect to number of sessions initiated'
+            },
+            title: {
+              text: 'Top {{ips | length}} IPs'
+            },
+            xAxis: {
+              categories: [
+                {% for entry in ips %}'{{ entry.0 }}'{% if not forloop.last %}, {% endif %}{% endfor %}
+                ]
+            },
+            series: [{
+              name: 'Count',
+              dataLabels: {
+                enabled: true,
+                crop: false,
+                overflow: 'none'
+              },
+              data: [
+                {% for entry in ips %}{{ entry.1 }}{% if not forloop.last %}, {% endif %}{% endfor %}
+              ]
+            }]
+            
+      });
+      </script>
+      
+    </div>
+  </div>
 </div>

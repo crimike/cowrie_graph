@@ -79,6 +79,44 @@ def index(request):
     }
     return render(request, 'dashboard.html', context)
 
+def top50(request):
+    sessions = Sessions.objects.values('client').annotate(ccount=Count('client'))
+    auths_combo = CowrieAuth.objects.values('username', 'password').annotate(combo_count=Count('username'))
+
+    combos = {}
+    for combo in auths_combo:
+        combos[combo['username'] + ":" + combo['password']] = combo['combo_count']
+        
+    clients = {}
+    for session in sessions:
+        try:
+            client_version = Clients.objects.filter(pk=session["client"])[0].version[2:-1]
+            clients[client_version] = session["ccount"]
+        except:
+            #handle list index out of range
+            pass
+
+    top_combos = sorted(combos.items(),key=lambda item:item[1], reverse=True)[:50]
+    top_clients = sorted(clients.items(), key=lambda item:item[1], reverse=True)[:50]
+
+    top_pass = get_top_count(CowrieAuth, 'password', 50)
+    top_users = get_top_count(CowrieAuth, 'username', 50)
+    top_inputs = get_top_count(Input, 'input', 50)
+    top_countries = get_top_count(Ipenrichments, 'country', 50)
+    top_ips = get_top_count(Sessions, 'ip', 50)
+
+
+    context = {
+        'passwords': top_pass,
+        'users': top_users,
+        'combos': top_combos,
+        'inputs': top_inputs,
+        'clients': top_clients,
+        'countries': top_countries,
+        'ips': top_ips
+    }
+    return render(request, 'top50s.html', context)
+
 def all_ips(request):
     sessions = Sessions.objects.all()
     ip_dict = {}

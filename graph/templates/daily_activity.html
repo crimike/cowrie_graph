@@ -1,68 +1,59 @@
-<div class="col-lg-6 mb-4">
-<div class="container-fluid">
-
-    <!-- Page Heading -->
-    
-    <div class="card shadow mb-4">
-      <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Daily honeypot activity</h6>
-      </div>
-      <div class="card-body">
-        <div class="table-responsive">
-          <div id="container_daily"></div>
-          <script>
-            Highcharts.chart('container_daily', {
-                chart: {
-                  zoomType: 'x',
-                  type: 'area'
+<div class="card shadow mb-4">
+  <div class="card-header py-3">
+    <h6 class="m-0 font-weight-bold text-primary">Daily honeypot activity</h6>
+  </div>
+  <div class="card-body">
+    <div class="table-responsive">
+      <div id="container_daily"></div>
+      <script>
+        Highcharts.chart('container_daily', {
+            chart: {
+              zoomType: 'x',
+              type: 'area'
+            },
+            title: {
+              text: 'Daily activity'
+            },
+            xAxis: {
+              categories: [
+                {% for entry in days %}'{{ entry.day }}'{% if not forloop.last %}, {% endif %}{% endfor %}
+                ]
+            },
+            plotOptions: {
+              area: {
+                fillColor: {
+                  linearGradient: [0, 0, 0, 300],
+                  stops: [
+                    [0, Highcharts.getOptions().colors[0]],
+                    [1, Highcharts.color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                  ]
                 },
-                title: {
-                  text: 'Daily activity'
+                marker: {
+                  radius: 2
                 },
-                xAxis: {
-                  categories: [
-                    {% for entry in days %}'{{ entry.day }}'{% if not forloop.last %}, {% endif %}{% endfor %}
-                    ]
-                },
-                plotOptions: {
-                  area: {
-                    fillColor: {
-                      linearGradient: [0, 0, 0, 300],
-                      stops: [
-                        [0, Highcharts.getOptions().colors[0]],
-                        [1, Highcharts.color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
-                      ]
-                    },
-                    marker: {
-                      radius: 2
-                    },
-                    lineWidth: 1,
-                    states: {
-                      hover: {
-                        lineWidth: 1
-                      }
-                    },
-                    threshold: null
+                lineWidth: 1,
+                states: {
+                  hover: {
+                    lineWidth: 1
                   }
                 },
-                series: [{
-                  name: 'Daily activity',
-                  dataLabels: {
-                    enabled: true,
-                    crop: false,
-                    overflow: 'none'
-                  },
-                  data: [ 
-                    {% for entry in days %} [ '{{ entry.day }}',{{ entry.xcount}} ] {% if not forloop.last %}, {% endif %}{% endfor %}
-                  ]
-                }]
-                
-          });
-          </script>
-        </div>
-      </div>
+                threshold: null
+              }
+            },
+            series: [{
+              name: 'Daily activity',
+              dataLabels: {
+                enabled: true,
+                crop: false,
+                overflow: 'none'
+              },
+              data: [ 
+                {% for entry in days %} [ '{{ entry.day }}',{{ entry.xcount}} ] {% if not forloop.last %}, {% endif %}{% endfor %}
+              ]
+            }]
+            
+      });
+      </script>
     </div>
-
   </div>
-  <!-- /.container-fluid -->
 </div>

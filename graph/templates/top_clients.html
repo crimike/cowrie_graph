@@ -1,49 +1,40 @@
-<div class="col-lg-6 mb-4">
-<div class="container-fluid">
-
-    <!-- Page Heading -->
-    
-    <div class="card shadow mb-4">
-      <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Top 10 SSH clients</h6>
-      </div>
-      <div class="card-body">
-        <div class="table-responsive">
-          <div id="container_clients"></div>
-          <script>
-            Highcharts.chart('container_clients', {
-                chart: {
-                  type: 'column'
-                },
-                caption:{
-                  text: 'Shows top 10 SSH clients used to interact with the honeypot'
-                },
-                title: {
-                  text: 'Top 10 SSH clients'
-                },
-                xAxis: {
-                  categories: [
-                    {% for entry in clients %}'{{ entry.0 }}'{% if not forloop.last %}, {% endif %}{% endfor %}
-                    ]
-                },
-                series: [{
-                  name: 'Count',
-                  dataLabels: {
-                    enabled: true,
-                    crop: false,
-                    overflow: 'none'
-                  },
-                  data: [
-                    {% for entry in inputs %}{{ entry.1 }}{% if not forloop.last %}, {% endif %}{% endfor %}
-                  ]
-                }]
-                
-          });
-          </script>
-        </div>
-      </div>
-    </div>
-
+<div class="card shadow mb-4">
+  <div class="card-header py-3">
+    <h6 class="m-0 font-weight-bold text-primary">Top {{clients | length}} SSH clients</h6>
   </div>
-  <!-- /.container-fluid -->
+  <div class="card-body">
+    <div class="table-responsive">
+      <div id="container_clients"></div>
+      <script>
+        Highcharts.chart('container_clients', {
+            chart: {
+              type: 'column'
+            },
+            caption:{
+              text: 'Shows top {{clients | length}} SSH clients used to interact with the honeypot'
+            },
+            title: {
+              text: 'Top {{clients | length}} SSH clients'
+            },
+            xAxis: {
+              categories: [
+                {% for entry in clients %}'{{ entry.0 }}'{% if not forloop.last %}, {% endif %}{% endfor %}
+                ]
+            },
+            series: [{
+              name: 'Count',
+              dataLabels: {
+                enabled: true,
+                crop: false,
+                overflow: 'none'
+              },
+              data: [
+                {% for entry in inputs %}{{ entry.1 }}{% if not forloop.last %}, {% endif %}{% endfor %}
+              ]
+            }]
+            
+      });
+      </script>
+    </div>
+  </div>
 </div>

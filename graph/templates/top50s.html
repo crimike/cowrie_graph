@@ -5,7 +5,7 @@
 
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-      <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+      <h1 class="h3 mb-0 text-gray-800">Top 50s Dashboard</h1>
     </div>
 
 <div class="row">
@@ -14,19 +14,19 @@
   <!-- Highcharts JavaScript -->
   <script src="/static/js/code/highcharts.src.js"></script>
 
-  <div class="col-xl-4 col-lg-5">
+  <div class="col-xl-12 col-lg-5">
     <div class="container-fluid">
       {% include "./top_passwords.html" %}
     </div>
   </div>
 
-  <div class="col-xl-4 col-lg-5">
+  <div class="col-xl-12 col-lg-5">
     <div class="container-fluid">
       {% include "./top_users.html" %}
     </div>
   </div>
 
-  <div class="col-xl-4 col-lg-5">
+  <div class="col-xl-12 col-lg-5">
     <div class="container-fluid">
       {% include "./top_combos.html" %}
     </div>
@@ -35,43 +35,23 @@
 </div>
 
 <div class="row">
-  <div class="col-lg-6 mb-4">
+  <div class="col-lg-12 mb-4">
     <div class="container-fluid">
       {% include "./top_clients.html" %}
     </div>
   </div>
-  <div class="col-lg-6 mb-4">
-    <div class="container-fluid">
-      {% include "./top_inputs.html" %}
-    </div>
-  </div>  
-
 </div>
 
 <div class="row">
-  <div class="col-lg-6 mb-4">
+  <div class="col-lg-12 mb-4">
     <div class="container-fluid">
       {% include "./top_countries.html" %}
     </div>
   </div>
-  <div class="col-lg-6 mb-4">
+  <div class="col-lg-12 mb-4">
     <div class="container-fluid">
       {% include "./top_ips.html" %}
     </div>  
-  </div>
-
-</div>
-
-<div class="row">
-  <div class="col-lg-6 mb-4">
-    <div class="container-fluid">
-      {% include "./daily_activity.html" %}
-    </div>
-  </div>
-  <div class="col-lg-6 mb-4">
-    <div class="container-fluid">
-      {% include "./weekly_activity.html" %}
-    </div>
   </div>
 
 </div>
