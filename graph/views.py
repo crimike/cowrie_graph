@@ -42,6 +42,12 @@ def index(request):
     auths_combo = CowrieAuth.objects.values('username', 'password').annotate(combo_count=Count('username'))
     daily_authentications = CowrieAuth.objects.extra(select={'day': 'date( timestamp )'}).values('day').annotate(xcount=Count('timestamp'))
     weekly_authentications = list(collections.Counter(list(CowrieAuth.objects.dates('timestamp', 'week'))).items())
+    logins_count = CowrieAuth.objects.all().count()
+    sessions_count = Sessions.objects.all().count()
+    downloads_count = Downloads.objects.all().count()
+    inputs_count = Input.objects.all().count()
+    unique_ip_count = Sessions.objects.values("ip").distinct().count()
+    active_sessions = Input.objects.values('session').distinct().count()
 
     combos = {}
     for combo in auths_combo:
@@ -75,7 +81,13 @@ def index(request):
         'countries': top10countries,
         'ips': top10ips,
         'days': daily_authentications,
-        'weeks': weekly_authentications
+        'weeks': weekly_authentications,
+        'logins_count': logins_count,
+        'sessions_count': sessions_count,
+        'downloads_count': downloads_count,
+        'inputs_count': inputs_count,
+        'unique_ip_count': unique_ip_count,
+        'active_sessions': active_sessions
     }
     return render(request, 'dashboard.html', context)
 
@@ -179,15 +191,6 @@ def ip(request,ip):
     return render(request,'sessions.html',context)
     
 def session(request, id):
-
-#     ipforwards with data
-# username and password
-# Downloads
-# Duration
-# Fingerprint
-# sessions with same fingerprint(ip and link)
-# ttylog
-# Client
 
     session = get_list_or_404(Sessions, id=id)
     
