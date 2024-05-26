@@ -140,6 +140,8 @@ class Ipenrichments(models.Model):
     is_known_attacker = models.BooleanField()
     is_known_abuser = models.BooleanField()
     is_threat = models.BooleanField()
+    latitude = models.FloatField(default=0)
+    longitude = models.FloatField(default=0)
 
     class Meta:
         db_table = 'ip_enrichments'
